@@ -3,12 +3,22 @@ from rest_framework import serializers
 from src.todolist.models import Todo
 
 
-class TodoSerializer(serializers.ModelSerializer):
+class TodoListSerializer(serializers.ModelSerializer):
     """
     Serializer for Todo model
     """
-    owner = serializers.SlugRelatedField(slug_field="username", read_only=True)
+    owner = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = Todo
-        fields = ['owner', 'title', 'content', 'created', 'due_date', 'is_completed']
+        fields = ['owner', 'title', 'content', 'created', 'due_date', 'is_completed', 'in_archive',]
+
+
+class TodoSerializer(serializers.ModelSerializer):
+    """ Post editing and output
+    """
+    owner = serializers.ReadOnlyField(source='user.username')
+
+    class Meta:
+        model = Todo
+        fields = ['owner', 'title', 'content', 'created', 'due_date', 'is_completed', 'in_archive']

@@ -11,9 +11,10 @@ class Todo(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField(auto_now_add=False, blank=True, null=True)
     is_completed = models.BooleanField(default=False)
+    in_archive = models.BooleanField(default=False)
 
     class Meta:
         ordering = ["-created"]
 
     def __str__(self):
-        return f"ToDo: {self.title}"
+        return f"ToDo:{self.id} {self.title}"
