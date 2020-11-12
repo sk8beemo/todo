@@ -25,6 +25,8 @@ export default function authReducer(state=initialState, action) {
                 refreshToken: null,
             }
         default:
-            return state
+            return {
+                ...state
+            }
     }
 }
