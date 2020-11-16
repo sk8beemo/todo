@@ -31,7 +31,9 @@ class App extends React.Component {
         }
 
         return (
-            <Layout>
+            <Layout
+                isAuth={this.props.isAuthenticated}
+            >
                 {routes}
             </Layout>
         );

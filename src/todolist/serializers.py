@@ -11,7 +11,7 @@ class TodoListSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Todo
-        fields = ['owner', 'title', 'content', 'created', 'due_date', 'is_completed', 'in_archive',]
+        fields = ['id', 'owner', 'title', 'content', 'created', 'due_date', 'is_completed', 'in_archive',]
 
 
 class TodoSerializer(serializers.ModelSerializer):
@@ -21,4 +21,4 @@ class TodoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Todo
-        fields = ['owner', 'title', 'content', 'created', 'due_date', 'is_completed', 'in_archive']
+        fields = ['id', 'owner', 'title', 'content', 'created', 'due_date', 'is_completed', 'in_archive']
