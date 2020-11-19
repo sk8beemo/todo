@@ -1,6 +1,28 @@
 import axios from "axios";
 
-import {FETCH_TODO_LIST_ERROR, FETCH_TODO_LIST_START, FETCH_TODO_LIST_SUCCESS, FETCH_TODO_STATUS} from "./actionTypes";
+import {
+    ADD_TODO_ERROR,
+    ADD_TODO_START, ADD_TODO_SUCCESS,
+    FETCH_TODO_LIST_ERROR,
+    FETCH_TODO_LIST_START,
+    FETCH_TODO_LIST_SUCCESS,
+    FETCH_TODO_STATUS
+} from "./actionTypes";
+import {addToDoHeader} from "../../helpers/todo-headers";
+
+export function addToDoHandler(toDo) {
+    return async (dispatch, getState) => {
+        const authToken = getState().auth.accessToken;
+        const options = addToDoHeader(toDo, authToken);
+        dispatch(addToDoStart());
+        try{
+            const response = await axios(options);
+            dispatch(addToDoSuccess(response.data));
+        } catch (e) {
+            dispatch(addToDoError(e))
+        }
+    }
+}
 
 export function statusToDoHandler(todo, index) {
     return async (dispatch, getState) => {
@@ -43,6 +65,24 @@ export function fetchTodoList() {
         } catch(e) {
             dispatch(fetchTodoListError(e))
         }
+    }
+}
+
+export function addToDoStart() {
+    return {
+        type: ADD_TODO_START
+    }
+}
+export function addToDoSuccess(todo) {
+    return {
+        type: ADD_TODO_SUCCESS,
+        payload: todo
+    }
+}
+export function addToDoError(error) {
+    return {
+        type: ADD_TODO_ERROR,
+        payload: error
     }
 }
 

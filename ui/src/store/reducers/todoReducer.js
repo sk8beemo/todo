@@ -1,4 +1,6 @@
 import {
+    ADD_TODO_ERROR,
+    ADD_TODO_START, ADD_TODO_SUCCESS,
     FETCH_TODO_LIST_ERROR,
     FETCH_TODO_LIST_START,
     FETCH_TODO_LIST_SUCCESS,
@@ -13,6 +15,22 @@ const initialState = {
 
 export default function todoReducer(state=initialState, action) {
     switch (action.type) {
+        case ADD_TODO_ERROR:
+            return {
+                ...state,
+                error: action.payload
+            }
+        case ADD_TODO_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                todoList: [...state.todoList, action.payload]
+            }
+        case ADD_TODO_START:
+            return {
+                ...state,
+                loading: true
+            }
         case FETCH_TODO_STATUS:
             return {
                 ...state,

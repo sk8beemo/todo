@@ -7,18 +7,23 @@ import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
 import Checkbox from "@material-ui/core/Checkbox";
-import ListItemText from "@material-ui/core/ListItemText";
 import DeleteIcon from '@material-ui/icons/Delete';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import TextField from "@material-ui/core/TextField";
+import AddIcon from '@material-ui/icons/Add';
+import Button from "@material-ui/core/Button";
 
-import {statusToDoHandler, fetchTodoList} from "../../store/actions/todo";
+import {statusToDoHandler, fetchTodoList, addToDoHandler} from "../../store/actions/todo";
+import "./TodoList.css";
 
 
-//TODO: добавить label для input['checkbox']
-//TODO: завершенные таски зачёркнутым текстом
-//TODO: добавить/удалить таску
+//TODO: удалить таску
+//TODO: тесты
+//TODO: добавить подзадачи(ждем бэкенд)
+//TODO: прелоадер на действия с todo
+//TODO: регистрация/рефактор авторизации
 
 const useStyles = makeStyles({
     Container: {
@@ -30,12 +35,26 @@ const useStyles = makeStyles({
     List: {
         width: '100%',
     },
+    ListItem: {
+        justifyContent: 'flex-end'
+    },
+    FormControlLabel: {
+        marginRight: 'auto'
+    },
     MuiPickersUtilsProvider: {
         top: '10%',
     },
+    Form: {
+        margin: '0 12px',
+        display: 'flex',
+        flexWrap: 'nowrap',
+    },
+    addTodo: {
+        width: '90%'
+    }
 });
 
-function TodoList (props) {
+function TodoList () {
     const classes = useStyles();
 
     const todoList = useSelector(state => state.todo.todoList);
@@ -49,6 +68,21 @@ function TodoList (props) {
     const handleChange = (event, newValue) => {
         setValue(newValue);
     };
+
+    const [toDo, setToDo] = React.useState('');
+    const inputHandler = event => {
+        const value = event.target.value;
+        setToDo(value);
+    }
+    const submitHandler = event => {
+        event.preventDefault();
+
+        if (toDo.length !== 0) {
+            dispatch(addToDoHandler(toDo));
+            setToDo('');
+        }
+    }
+
 
     return (
         <Container className={classes.Container} maxWidth="sm">
@@ -68,27 +102,45 @@ function TodoList (props) {
             <List className={classes.List}>
                 {
                     todoList.map((item, index) => {
-                        const labelId = `checkbox-list-label-${item}`;
                         return (
-                            <ListItem key={index} role={undefined} dense button >
-                                <ListItemIcon>
-                                    <Checkbox
-                                        edge="start"
-                                        checked={item.is_completed}
-                                        onChange={() => dispatch(statusToDoHandler(item))}
-                                        tabIndex={-1}
-                                        disableRipple
-                                        inputProps={{ 'aria-labelledby': labelId }}
-                                    />
-                                </ListItemIcon>
-                                <ListItemText id={labelId} primary={item.title} />
-                                <DeleteIcon />
-                                <DeleteForeverIcon />
+                            <ListItem className={classes.ListItem} key={index} role={undefined} dense button >
+                                <FormControlLabel
+                                    className={`${classes.FormControlLabel} ${(item.is_completed ? ' todo__completed' : '')}`}
+                                    control={
+                                        <Checkbox
+                                            checked={item.is_completed}
+                                            onChange={() => dispatch(statusToDoHandler(item))}
+                                            name={item.title} />}
+                                            label={item.title}
+                                />
+                                <DeleteIcon className={classes.DeleteIcon} />
+                                <DeleteForeverIcon className={classes.DeleteForeverIcon} />
                             </ListItem>
                         );
                     })
                 }
             </List>
+            <form
+                className={classes.Form}
+                noValidate autoComplete="off"
+                onSubmit={submitHandler}
+            >
+                <TextField
+                    className={classes.addTodo}
+                    id="outlined-basic"
+                    label="Add todo"
+                    variant="outlined"
+                    value={toDo}
+                    onChange={inputHandler}
+                />
+                <Button
+                    type="submit"
+                    variant="contained"
+                    color="primary"
+                >
+                    <AddIcon />
+                </Button>
+            </form>
         </Container>
     )
 }

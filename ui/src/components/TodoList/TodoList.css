@@ -1,0 +1,9 @@
+.todo__completed {
+    text-decoration: line-through;
+}
+.MuiFormControl-root, .MuiInputBase-root {
+    display: block !important;
+}
+.MuiInputBase-input.MuiOutlinedInput-input {
+    padding: 12px;
+}
