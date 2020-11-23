@@ -12,7 +12,8 @@ export function addToDoHeader(toDo, token) {
         },
 
         data: {
-            title: toDo
+            title: toDo,
+            children: []
         }
     }
 }

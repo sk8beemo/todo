@@ -35,7 +35,6 @@ class TodoView(CreateRetrieveUpdateDestroy):
         serializer = self.serializer_class(data=request.data)
         if serializer.is_valid():
             if 'parent' in request.data:
-                print('hello')
                 parent = Todo.objects.get(pk=request.data['parent'])
                 serializer.save(
                     owner=self.request.user,

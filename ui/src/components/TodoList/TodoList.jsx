@@ -20,8 +20,8 @@ import "./TodoList.css";
 
 
 //TODO: удалить таску
+//TODO: фильтр todo по завершенности, и корзина
 //TODO: тесты
-//TODO: добавить подзадачи(ждем бэкенд)
 //TODO: прелоадер на действия с todo
 //TODO: регистрация/рефактор авторизации
 
@@ -38,6 +38,16 @@ const useStyles = makeStyles({
     ListItem: {
         justifyContent: 'flex-end'
     },
+    subListItem: {
+        position: 'relative',
+        left: '10px',
+        bottom: '0',
+        paddingLeft: '10%',
+        paddingRight: '0',
+        paddingTop: '0',
+        paddingBottom: '0',
+        transform: 'scale(0.9)'
+    },
     FormControlLabel: {
         marginRight: 'auto'
     },
@@ -51,11 +61,19 @@ const useStyles = makeStyles({
     },
     addTodo: {
         width: '90%'
-    }
+    },
 });
+const useIcons = makeStyles((theme) => ({
+    root: {
+        color: '#fff',
+        backgroundColor: 'green',
+        borderRadius: '20px'
+    },
+}));
 
 function TodoList () {
     const classes = useStyles();
+    const icons = useIcons();
 
     const todoList = useSelector(state => state.todo.todoList);
     const dispatch = useDispatch();
@@ -83,7 +101,6 @@ function TodoList () {
         }
     }
 
-
     return (
         <Container className={classes.Container} maxWidth="sm">
             <Paper className={classes.Paper}>
@@ -101,21 +118,45 @@ function TodoList () {
             </Paper>
             <List className={classes.List}>
                 {
-                    todoList.map((item, index) => {
+                    todoList.map((item) => {
                         return (
-                            <ListItem className={classes.ListItem} key={index} role={undefined} dense button >
-                                <FormControlLabel
-                                    className={`${classes.FormControlLabel} ${(item.is_completed ? ' todo__completed' : '')}`}
-                                    control={
-                                        <Checkbox
-                                            checked={item.is_completed}
-                                            onChange={() => dispatch(statusToDoHandler(item))}
-                                            name={item.title} />}
-                                            label={item.title}
-                                />
-                                <DeleteIcon className={classes.DeleteIcon} />
-                                <DeleteForeverIcon className={classes.DeleteForeverIcon} />
-                            </ListItem>
+                            <div key={item.id}>
+                                <ListItem className={classes.ListItem} role={undefined} dense button >
+                                    <FormControlLabel
+                                        className={`${classes.FormControlLabel} ${(item.is_completed ? ' todo__completed' : '')}`}
+                                        control={
+                                            <Checkbox
+                                                checked={item.is_completed}
+                                                onChange={() => dispatch(statusToDoHandler(item))}
+                                                name={item.title} />}
+                                                label={item.title}
+                                    />
+                                    <AddIcon
+                                        className={icons.root}
+                                    />
+                                    <DeleteIcon className={classes.DeleteIcon} />
+                                    <DeleteForeverIcon className={classes.DeleteForeverIcon} />
+                                </ListItem>
+                                {
+                                    item.children.map((subItem) => {
+                                        return (
+                                            <ListItem className={classes.subListItem} key={subItem.id} role={undefined} dense button >
+                                                <FormControlLabel
+                                                    className={`${classes.FormControlLabel} ${(subItem.is_completed ? ' todo__completed' : '')}`}
+                                                    control={
+                                                        <Checkbox
+                                                            checked={subItem.is_completed}
+                                                            onChange={() => dispatch(statusToDoHandler(subItem))}
+                                                            name={subItem.title} />}
+                                                    label={subItem.title}
+                                                />
+                                                <DeleteIcon className={classes.DeleteIcon} />
+                                                <DeleteForeverIcon className={classes.DeleteForeverIcon} />
+                                            </ListItem>
+                                        )
+                                    })
+                                }
+                            </div>
                         );
                     })
                 }

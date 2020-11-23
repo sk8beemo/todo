@@ -76,7 +76,14 @@ export function addToDoStart() {
 export function addToDoSuccess(todo) {
     return {
         type: ADD_TODO_SUCCESS,
-        payload: todo
+        todo: {
+            id: todo.id,
+            parent: todo.parent,
+            children: [],
+            title: todo.title,
+            is_completed: todo.is_completed,
+            in_archive: todo.in_archive
+        }
     }
 }
 export function addToDoError(error) {

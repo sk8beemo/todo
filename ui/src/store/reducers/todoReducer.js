@@ -24,7 +24,7 @@ export default function todoReducer(state=initialState, action) {
             return {
                 ...state,
                 loading: false,
-                todoList: [...state.todoList, action.payload]
+                todoList: [action.todo, ...state.todoList]
             }
         case ADD_TODO_START:
             return {
