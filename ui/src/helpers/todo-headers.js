@@ -52,3 +52,34 @@ export function deleteForeverToDoHandlerHeader(toDo, token) {
         }
     }
 }
+
+export function tabSwitcherHandlerHeader(value, token) {
+    let params;
+    if (value === 0) {
+
+    } else if (value === 1) {
+        params = {
+            is_completed: 'False'
+        }
+    } else if (value === 2) {
+        params = {
+            is_completed: 'True'
+        }
+    } else if (value === 3) {
+        params = {
+            in_archive: 'True'
+        }
+    }
+    return {
+        url: 'api/v1/todolist',
+        method: 'get',
+        baseURL: baseURL,
+
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'JWT ' + token
+        },
+
+        params
+    }
+}

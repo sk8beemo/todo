@@ -16,10 +16,16 @@ class TodoListViewSet(generics.ListAPIView):
     permission_classes = [IsAuthorEntry, ]
 
     def get_queryset(self):
-        return Todo.objects.filter(
-            owner=self.request.user,
-            in_archive=False
-        )
+        queryset = Todo.objects.all()
+        is_completed = self.request.query_params.get('is_completed', None)
+        in_archive = self.request.query_params.get('in_archive', None)
+        if is_completed is not None:
+            queryset = queryset.filter(is_completed=is_completed).filter(in_archive=False)
+        elif in_archive is not None:
+            queryset = queryset.filter(in_archive=in_archive)
+        else:
+            queryset = queryset.filter(in_archive=False)
+        return queryset
 
 
 class TodoView(CreateRetrieveUpdateDestroy):

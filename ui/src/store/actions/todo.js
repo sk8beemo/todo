@@ -8,7 +8,26 @@ import {
     FETCH_TODO_LIST_SUCCESS,
     FETCH_TODO_STATUS, IN_ARCHIVE_TODO_ERROR, IN_ARCHIVE_TODO_START, IN_ARCHIVE_TODO_SUCCESS
 } from "./actionTypes";
-import {addToDoHeader, deleteForeverToDoHandlerHeader, deleteToDoHandlerHeader} from "../../helpers/todo-headers";
+import {
+    addToDoHeader,
+    deleteForeverToDoHandlerHeader,
+    deleteToDoHandlerHeader,
+    tabSwitcherHandlerHeader
+} from "../../helpers/todo-headers";
+
+export function tabSwitcherHandler(value) {
+    return async (dispatch, getState) => {
+        const authToken = getState().auth.accessToken;
+        const options = tabSwitcherHandlerHeader(value, authToken);
+        dispatch(fetchTodoListStart());
+        try {
+            const response = await axios(options);
+            dispatch(fetchTodoListSuccess(response.data));
+        } catch(e) {
+            dispatch(fetchTodoListError(e))
+        }
+    }
+}
 
 export function addToDoHandler(toDo) {
     return async (dispatch, getState) => {
@@ -76,25 +95,6 @@ export function fetchToDoStatus(todo, index) {
         type: FETCH_TODO_STATUS,
         todo: todo,
         index: index
-    }
-}
-
-export function fetchTodoList() {
-    return async (dispatch, getState) => {
-        dispatch(fetchTodoListStart());
-        const options = {
-            method: 'GET',
-            headers: {
-                'Authorization': `JWT ${getState().auth.accessToken}`,
-            },
-            url: 'http://127.0.0.1:8000/api/v1/todolist',
-        };
-        try {
-            const response = await axios(options);
-            dispatch(fetchTodoListSuccess(response.data));
-        } catch(e) {
-            dispatch(fetchTodoListError(e))
-        }
     }
 }
 

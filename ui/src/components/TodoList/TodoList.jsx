@@ -17,10 +17,9 @@ import Button from "@material-ui/core/Button";
 
 import {
     statusToDoHandler,
-    fetchTodoList,
     addToDoHandler,
     inArchiveToDoHandler,
-    deleteToDoHandler
+    deleteToDoHandler, tabSwitcherHandler
 } from "../../store/actions/todo";
 import "./TodoList.css";
 
@@ -90,13 +89,14 @@ function TodoList () {
     const todoList = useSelector(state => state.todo.todoList);
     const dispatch = useDispatch();
     React.useEffect(() => {
-        dispatch(fetchTodoList());
+        dispatch(tabSwitcherHandler(value));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const [value, setValue] = React.useState(0);
     const handleChange = (event, newValue) => {
         setValue(newValue);
+        dispatch(tabSwitcherHandler(newValue));
     };
 
     const [toDo, setToDo] = React.useState('');
