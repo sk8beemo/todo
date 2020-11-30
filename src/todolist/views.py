@@ -16,9 +16,10 @@ class TodoListViewSet(generics.ListAPIView):
     permission_classes = [IsAuthorEntry, ]
 
     def get_queryset(self):
-        # remove filter(archive)
         return Todo.objects.filter(
-            owner=self.request.user)
+            owner=self.request.user,
+            in_archive=False
+        )
 
 
 class TodoView(CreateRetrieveUpdateDestroy):

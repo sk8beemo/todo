@@ -15,17 +15,29 @@ import TextField from "@material-ui/core/TextField";
 import AddIcon from '@material-ui/icons/Add';
 import Button from "@material-ui/core/Button";
 
-import {statusToDoHandler, fetchTodoList, addToDoHandler} from "../../store/actions/todo";
+import {
+    statusToDoHandler,
+    fetchTodoList,
+    addToDoHandler,
+    inArchiveToDoHandler,
+    deleteToDoHandler
+} from "../../store/actions/todo";
 import "./TodoList.css";
 
 
 //TODO: удалить таску
+//TODO: добавить подзадачу
 //TODO: фильтр todo по завершенности, и корзина
 //TODO: тесты
 //TODO: прелоадер на действия с todo
 //TODO: регистрация/рефактор авторизации
 
 const useStyles = makeStyles({
+    Tab: {
+        paddingLeft: 0,
+        paddingRight: 0,
+        minWidth: '100px',
+    },
     Container: {
         marginTop: 100
     },
@@ -101,6 +113,14 @@ function TodoList () {
         }
     }
 
+    const deleteClickHandler = toDo => {
+        dispatch(inArchiveToDoHandler(toDo));
+    }
+
+    const deleteForeverHandler = toDo => {
+        dispatch(deleteToDoHandler(toDo));
+    }
+
     return (
         <Container className={classes.Container} maxWidth="sm">
             <Paper className={classes.Paper}>
@@ -111,9 +131,10 @@ function TodoList () {
                     textColor="primary"
                     centered
                 >
-                    <Tab label="All" />
-                    <Tab label="Active" />
-                    <Tab label="Done" />
+                    <Tab className={classes.Tab} label="All" />
+                    <Tab className={classes.Tab} label="Active" />
+                    <Tab className={classes.Tab} label="Done" />
+                    <Tab className={classes.Tab} label="basket" />
                 </Tabs>
             </Paper>
             <List className={classes.List}>
@@ -131,11 +152,17 @@ function TodoList () {
                                                 name={item.title} />}
                                                 label={item.title}
                                     />
-                                    <AddIcon
-                                        className={icons.root}
+                                    {/*<AddIcon*/}
+                                    {/*    className={icons.root}*/}
+                                    {/*/>*/}
+                                    <DeleteIcon
+                                        className={classes.DeleteIcon}
+                                        onClick={() => deleteClickHandler(item)}
                                     />
-                                    <DeleteIcon className={classes.DeleteIcon} />
-                                    <DeleteForeverIcon className={classes.DeleteForeverIcon} />
+                                    <DeleteForeverIcon
+                                        className={classes.DeleteForeverIcon}
+                                        onClick={() => deleteForeverHandler(item)}
+                                    />
                                 </ListItem>
                                 {
                                     item.children.map((subItem) => {
@@ -150,7 +177,7 @@ function TodoList () {
                                                             name={subItem.title} />}
                                                     label={subItem.title}
                                                 />
-                                                <DeleteIcon className={classes.DeleteIcon} />
+                                                <DeleteIcon className={classes.DeleteIcon}/>
                                                 <DeleteForeverIcon className={classes.DeleteForeverIcon} />
                                             </ListItem>
                                         )

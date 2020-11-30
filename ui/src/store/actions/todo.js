@@ -6,9 +6,9 @@ import {
     FETCH_TODO_LIST_ERROR,
     FETCH_TODO_LIST_START,
     FETCH_TODO_LIST_SUCCESS,
-    FETCH_TODO_STATUS
+    FETCH_TODO_STATUS, IN_ARCHIVE_TODO_ERROR, IN_ARCHIVE_TODO_START, IN_ARCHIVE_TODO_SUCCESS
 } from "./actionTypes";
-import {addToDoHeader} from "../../helpers/todo-headers";
+import {addToDoHeader, deleteForeverToDoHandlerHeader, deleteToDoHandlerHeader} from "../../helpers/todo-headers";
 
 export function addToDoHandler(toDo) {
     return async (dispatch, getState) => {
@@ -20,6 +20,36 @@ export function addToDoHandler(toDo) {
             dispatch(addToDoSuccess(response.data));
         } catch (e) {
             dispatch(addToDoError(e))
+        }
+    }
+}
+
+export function inArchiveToDoHandler(toDoItem) {
+    return async (dispatch, getState) => {
+        const authToken = getState().auth.accessToken;
+        const todo = getState().todo.todoList;
+        const options = deleteToDoHandlerHeader(toDoItem, authToken);
+        dispatch(inArchiveTodoStart());
+        try {
+            await axios(options);
+            dispatch(inArchiveTodoSuccess(todo.filter(item => item.id !== toDoItem.id)));
+        } catch(e) {
+            dispatch(inArchiveTodoError(e));
+        }
+    }
+}
+
+export function deleteToDoHandler(toDoItem) {
+    return async (dispatch, getState) => {
+        const authToken = getState().auth.accessToken;
+        const todo = getState().todo.todoList;
+        const options = deleteForeverToDoHandlerHeader(toDoItem, authToken);
+        dispatch(inArchiveTodoStart());
+        try {
+            await axios(options);
+            dispatch(inArchiveTodoSuccess(todo.filter(item => item.id !== toDoItem.id)));
+        } catch(e) {
+            dispatch(inArchiveTodoError(e));
         }
     }
 }
@@ -68,6 +98,23 @@ export function fetchTodoList() {
     }
 }
 
+export function inArchiveTodoStart() {
+    return {
+        type: IN_ARCHIVE_TODO_START
+    }
+}
+export function inArchiveTodoSuccess(data) {
+    return {
+        type: IN_ARCHIVE_TODO_SUCCESS,
+        data
+    }
+}
+export function inArchiveTodoError(error) {
+    return {
+        type: IN_ARCHIVE_TODO_ERROR,
+        error
+    }
+}
 export function addToDoStart() {
     return {
         type: ADD_TODO_START

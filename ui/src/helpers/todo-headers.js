@@ -17,3 +17,38 @@ export function addToDoHeader(toDo, token) {
         }
     }
 }
+
+export function deleteToDoHandlerHeader(toDo, token) {
+    return {
+        url: `api/v1/todolist/todo/${toDo.id}`,
+        method: 'put',
+        baseURL: baseURL,
+
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'JWT ' + token
+        },
+
+        data: {
+            title: toDo.title,
+            in_archive: !toDo.in_archive
+        }
+    }
+}
+
+export function deleteForeverToDoHandlerHeader(toDo, token) {
+    return {
+        url: `api/v1/todolist/todo/${toDo.id}`,
+        method: 'delete',
+        baseURL: baseURL,
+
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'JWT ' + token
+        },
+
+        data: {
+            title: toDo.title,
+        }
+    }
+}
