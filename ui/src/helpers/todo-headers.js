@@ -1,6 +1,20 @@
 export const baseURL = 'http://127.0.0.1:8000/';
 
-export function addToDoHeader(toDo, token) {
+export function addToDoHeader(toDo, parent, token) {
+    let data;
+    if (parent) {
+        data = {
+            title: toDo,
+            parent: parent,
+            children: []
+        }
+    } else {
+        data = {
+            title: toDo,
+                children: []
+        }
+    }
+
     return {
         url: 'api/v1/todolist/todo',
         method: 'post',
@@ -11,10 +25,7 @@ export function addToDoHeader(toDo, token) {
             'Authorization': 'JWT ' + token
         },
 
-        data: {
-            title: toDo,
-            children: []
-        }
+        data
     }
 }
 

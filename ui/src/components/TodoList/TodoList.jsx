@@ -6,22 +6,13 @@ import Paper from "@material-ui/core/Paper";
 import Tabs from "@material-ui/core/Tabs";
 import Tab from "@material-ui/core/Tab";
 import List from "@material-ui/core/List";
-import ListItem from "@material-ui/core/ListItem";
-import Checkbox from "@material-ui/core/Checkbox";
-import DeleteIcon from '@material-ui/icons/Delete';
-import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
-import FormControlLabel from "@material-ui/core/FormControlLabel";
 import TextField from "@material-ui/core/TextField";
 import AddIcon from '@material-ui/icons/Add';
 import Button from "@material-ui/core/Button";
 
-import {
-    statusToDoHandler,
-    addToDoHandler,
-    inArchiveToDoHandler,
-    deleteToDoHandler, tabSwitcherHandler
-} from "../../store/actions/todo";
+import {addToDoHandler, tabSwitcherHandler} from "../../store/actions/todo";
 import "./TodoList.css";
+import {ToDoItem} from "./ToDoItem/ToDoItem";
 
 
 //TODO: удалить таску
@@ -29,7 +20,8 @@ import "./TodoList.css";
 //TODO: фильтр todo по завершенности, и корзина
 //TODO: тесты
 //TODO: прелоадер на действия с todo
-//TODO: регистрация/рефактор авторизации
+//TODO: регистрация/рефактор авторизации(фикс автологина)
+//TODO: Если таска завершается, подтаски тоже завершаются
 
 const useStyles = makeStyles({
     Tab: {
@@ -46,22 +38,6 @@ const useStyles = makeStyles({
     List: {
         width: '100%',
     },
-    ListItem: {
-        justifyContent: 'flex-end'
-    },
-    subListItem: {
-        position: 'relative',
-        left: '10px',
-        bottom: '0',
-        paddingLeft: '10%',
-        paddingRight: '0',
-        paddingTop: '0',
-        paddingBottom: '0',
-        transform: 'scale(0.9)'
-    },
-    FormControlLabel: {
-        marginRight: 'auto'
-    },
     MuiPickersUtilsProvider: {
         top: '10%',
     },
@@ -74,17 +50,9 @@ const useStyles = makeStyles({
         width: '90%'
     },
 });
-const useIcons = makeStyles((theme) => ({
-    root: {
-        color: '#fff',
-        backgroundColor: 'green',
-        borderRadius: '20px'
-    },
-}));
 
 function TodoList () {
     const classes = useStyles();
-    const icons = useIcons();
 
     const todoList = useSelector(state => state.todo.todoList);
     const dispatch = useDispatch();
@@ -113,14 +81,6 @@ function TodoList () {
         }
     }
 
-    const deleteClickHandler = toDo => {
-        dispatch(inArchiveToDoHandler(toDo));
-    }
-
-    const deleteForeverHandler = toDo => {
-        dispatch(deleteToDoHandler(toDo));
-    }
-
     return (
         <Container className={classes.Container} maxWidth="sm">
             <Paper className={classes.Paper}>
@@ -141,50 +101,11 @@ function TodoList () {
                 {
                     todoList.map((item) => {
                         return (
-                            <div key={item.id}>
-                                <ListItem className={classes.ListItem} role={undefined} dense button >
-                                    <FormControlLabel
-                                        className={`${classes.FormControlLabel} ${(item.is_completed ? ' todo__completed' : '')}`}
-                                        control={
-                                            <Checkbox
-                                                checked={item.is_completed}
-                                                onChange={() => dispatch(statusToDoHandler(item))}
-                                                name={item.title} />}
-                                                label={item.title}
-                                    />
-                                    {/*<AddIcon*/}
-                                    {/*    className={icons.root}*/}
-                                    {/*/>*/}
-                                    <DeleteIcon
-                                        className={classes.DeleteIcon}
-                                        onClick={() => deleteClickHandler(item)}
-                                    />
-                                    <DeleteForeverIcon
-                                        className={classes.DeleteForeverIcon}
-                                        onClick={() => deleteForeverHandler(item)}
-                                    />
-                                </ListItem>
-                                {
-                                    item.children.map((subItem) => {
-                                        return (
-                                            <ListItem className={classes.subListItem} key={subItem.id} role={undefined} dense button >
-                                                <FormControlLabel
-                                                    className={`${classes.FormControlLabel} ${(subItem.is_completed ? ' todo__completed' : '')}`}
-                                                    control={
-                                                        <Checkbox
-                                                            checked={subItem.is_completed}
-                                                            onChange={() => dispatch(statusToDoHandler(subItem))}
-                                                            name={subItem.title} />}
-                                                    label={subItem.title}
-                                                />
-                                                <DeleteIcon className={classes.DeleteIcon}/>
-                                                <DeleteForeverIcon className={classes.DeleteForeverIcon} />
-                                            </ListItem>
-                                        )
-                                    })
-                                }
-                            </div>
-                        );
+                            <ToDoItem
+                                key={item.id}
+                                item={item}
+                            />
+                        )
                     })
                 }
             </List>

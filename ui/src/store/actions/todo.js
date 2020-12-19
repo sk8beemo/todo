@@ -29,10 +29,10 @@ export function tabSwitcherHandler(value) {
     }
 }
 
-export function addToDoHandler(toDo) {
+export function addToDoHandler(toDo, parent) {
     return async (dispatch, getState) => {
         const authToken = getState().auth.accessToken;
-        const options = addToDoHeader(toDo, authToken);
+        const options = addToDoHeader(toDo, parent, authToken);
         dispatch(addToDoStart());
         try{
             const response = await axios(options);

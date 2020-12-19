@@ -41,7 +41,23 @@ export default function todoReducer(state=initialState, action) {
             return {
                 ...state,
                 loading: false,
-                todoList: [action.todo, ...state.todoList]
+                // todoList: [action.todo, ...state.todoList]
+                // todoList: state.todoList.map(
+                //     todo => !action.todo.parent
+                //     ? action.todo
+                //     : todo.id === action.todo.parent
+                //         ? {...todo, children: todo.children.push(action.todo)}
+                //         : todo
+                // )
+                todoList: (
+                    !action.todo.parent
+                    ? [action.todo, ...state.todoList]
+                    : state.todoList.map(
+                        todo => todo.id === action.todo.parent
+                        ? {...todo, children: [action.todo, ...todo.children]}
+                        : todo
+                    )
+                )
             }
         case ADD_TODO_START:
             return {
